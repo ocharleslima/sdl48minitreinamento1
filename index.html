@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Demanda Local - Método SDL48</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .gradient-text {
+      background: linear-gradient(135deg, #a855f7 0%, #3b82f6 50%, #06b6d4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .gradient-bg-btn {
+      background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+    }
+    .gradient-bg-btn:hover {
+      background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+    }
+    .pulse-glow {
+      box-shadow: 0 0 25px rgba(34, 197, 94, 0.4);
+      animation: pulseGlow 2s infinite;
+    }
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 25px rgba(34, 197, 94, 0.4); }
+      50% { box-shadow: 0 0 40px rgba(34, 197, 94, 0.7); }
+    }
+    /* Estilo para ocultar o conteúdo antes do tempo */
+    .delay-hidden {
+      display: none !important;
+    }
+    .delay-show {
+      display: block !important;
+      animation: fadeIn 0.8s ease-in-out forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen selection:bg-purple-500 selection:text-white">
+
+  <!-- Glow Background Effect -->
+  <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+    <div class="absolute -top-40 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-purple-600/15 rounded-full blur-[140px]"></div>
+    <div class="absolute top-1/3 left-10 w-[400px] h-[400px] bg-blue-600/10 rounded-full blur-[120px]"></div>
+  </div>
+
+  <div class="relative z-10 max-w-3xl mx-auto px-4 py-8 sm:py-12">
+
+    <!-- Top Badge -->
+    <div class="flex justify-center mb-4">
+      <span class="inline-flex items-center px-3.5 py-1 rounded-full text-xs font-semibold tracking-wide bg-purple-950/80 text-purple-300 border border-purple-800/50 shadow-sm">
+        SISTEMA DE DEMANDA LOCAL
+      </span>
+    </div>
+
+    <!-- Main Headline -->
+    <h1 class="text-2xl sm:text-4xl font-black text-center text-white leading-tight mb-4 tracking-tight">
+      Pare de depender da sorte para colocar <span class="gradient-text">clientes no seu negócio</span>.
+    </h1>
+
+    <!-- Subtitle -->
+    <p class="text-slate-300 text-center text-sm sm:text-base max-w-2xl mx-auto mb-8 font-normal leading-relaxed">
+      Descubra onde sua empresa está perdendo demanda e como criar um sistema previsível de atração na sua região. Assista à aula prática abaixo:
+    </p>
+
+    <!-- Video Box Wrapper -->
+    <div class="relative w-full aspect-video bg-slate-900 rounded-2xl overflow-hidden border border-purple-500/30 shadow-2xl shadow-purple-950/50 mb-8">
+      <iframe
+        id="vslVideo"
+        class="w-full h-full"
+        src="https://www.youtube.com/embed/qTOP6mVfJ5o?enablejsapi=1&amp;autoplay=0&amp;rel=0&amp;controls=1&amp;modestbranding=1&amp;playsinline=1"
+        title="Aula Prática Sistema de Demanda Local"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowfullscreen>
+      </iframe>
+    </div>
+
+    <!-- CONTEÚDO BLOQUEADO (revelado apenas após 3:39 de vídeo assistido) -->
+    <div id="delayedContent" class="delay-hidden space-y-12">
+
+      <!-- CTA Button -->
+      <div class="text-center pt-2">
+        <a href="https://api.whatsapp.com/send/?phone=5511960112597&amp;text=Ol%C3%A1%2C+acabei+de+assistir+ao+mini+treinamento+e+quero+o+acompanhamento+do+Charles.&amp;type=phone_number&amp;app_absent=0" target="_blank" rel="noopener noreferrer"
+           class="inline-flex items-center justify-center gap-2 px-6 py-3.5 gradient-bg-btn text-white font-bold text-base rounded-xl pulse-glow transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 shadow-md">
+          <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+          </svg>
+          CHAMAR NO WHATSAPP
+        </a>
+      </div>
+
+      <!-- Section: Identificação Profissional -->
+      <div class="bg-slate-900/80 border border-slate-800/80 rounded-2xl p-6 sm:p-8 backdrop-blur-sm shadow-xl">
+        <span class="text-xs font-bold text-purple-400 tracking-wider uppercase block mb-1">Identificação Profissional</span>
+        <h2 class="text-xl sm:text-2xl font-extrabold text-white mb-6">
+          Sua empresa enfrenta algum destes problemas no dia a dia?
+        </h2>
+
+        <div class="space-y-4">
+          <!-- Item 1 -->
+          <div class="bg-slate-950/60 border border-slate-800/70 rounded-xl p-4 sm:p-5 flex items-start gap-4 hover:border-purple-500/40 transition-colors">
+            <div class="w-9 h-9 rounded-xl bg-purple-950 text-purple-400 border border-purple-800/50 flex items-center justify-center shrink-0 font-extrabold text-base shadow-sm">1</div>
+            <div>
+              <h3 class="font-bold text-slate-100 text-sm sm:text-base">WhatsApp completamente parado</h3>
+              <p class="text-xs sm:text-sm text-slate-400 mt-1 leading-relaxed">Você abre o aplicativo várias vezes ao dia e só encontra silêncio ou mensagens de fornecedores, enquanto a agenda continua vazia.</p>
+            </div>
+          </div>
+
+          <!-- Item 2 -->
+          <div class="bg-slate-950/60 border border-slate-800/70 rounded-xl p-4 sm:p-5 flex items-start gap-4 hover:border-purple-500/40 transition-colors">
+            <div class="w-9 h-9 rounded-xl bg-purple-950 text-purple-400 border border-purple-800/50 flex items-center justify-center shrink-0 font-extrabold text-base shadow-sm">2</div>
+            <div>
+              <h3 class="font-bold text-slate-100 text-sm sm:text-base">Refém do "Boca a Boca" e da sorte</h3>
+              <p class="text-xs sm:text-sm text-slate-400 mt-1 leading-relaxed">O faturamento mensal é uma montanha-russa imprevisível. Você nunca sabe se o próximo mês vai cobrir os custos fixos da empresa.</p>
+            </div>
+          </div>
+
+          <!-- Item 3 -->
+          <div class="bg-slate-950/60 border border-slate-800/70 rounded-xl p-4 sm:p-5 flex items-start gap-4 hover:border-purple-500/40 transition-colors">
+            <div class="w-9 h-9 rounded-xl bg-purple-950 text-purple-400 border border-purple-800/50 flex items-center justify-center shrink-0 font-extrabold text-base shadow-sm">3</div>
+            <div>
+              <h3 class="font-bold text-slate-100 text-sm sm:text-base">Concorrência levando sua demanda</h3>
+              <p class="text-xs sm:text-sm text-slate-400 mt-1 leading-relaxed">Ver concorrentes locais com serviços ou produtos inferiores ao seu com o estabelecimento cheio, só porque aparecem melhor no digital.</p>
+            </div>
+          </div>
+
+          <!-- Item 4 -->
+          <div class="bg-slate-950/60 border border-slate-800/70 rounded-xl p-4 sm:p-5 flex items-start gap-4 hover:border-purple-500/40 transition-colors">
+            <div class="w-9 h-9 rounded-xl bg-purple-950 text-purple-400 border border-purple-800/50 flex items-center justify-center shrink-0 font-extrabold text-base shadow-sm">4</div>
+            <div>
+              <h3 class="font-bold text-slate-100 text-sm sm:text-base">Trauma com agências de tráfego</h3>
+              <p class="text-xs sm:text-sm text-slate-400 mt-1 leading-relaxed">Já investiu em anúncios ou gestores que só queimaram seu dinheiro prometendo mundos e fundos, sem trazer clientes reais pra sua loja.</p>
+            </div>
+          </div>
+
+          <!-- Item 5 -->
+          <div class="bg-slate-950/60 border border-slate-800/70 rounded-xl p-4 sm:p-5 flex items-start gap-4 hover:border-purple-500/40 transition-colors">
+            <div class="w-9 h-9 rounded-xl bg-purple-950 text-purple-400 border border-purple-800/50 flex items-center justify-center shrink-0 font-extrabold text-base shadow-sm">5</div>
+            <div>
+              <h3 class="font-bold text-slate-100 text-sm sm:text-base">Falta de previsibilidade de caixa</h3>
+              <p class="text-xs sm:text-sm text-slate-400 mt-1 leading-relaxed">Meses ótimos seguidos por meses desastrosos, sem entender o que causou o pico ou a queda de vendas no seu comércio local.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section: Depoimentos Reais Transcritos -->
+      <div class="bg-slate-900/80 border border-slate-800/80 rounded-2xl p-6 sm:p-8 backdrop-blur-sm shadow-xl">
+        <h2 class="text-xl sm:text-2xl font-extrabold text-white text-center mb-1">
+          DEPOIMENTOS REAIS
+        </h2>
+        <p class="text-xs sm:text-sm text-purple-400 font-semibold text-center mb-6">
+          Quem aplicou o Método SDL48 aprova • Relatos de clientes
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+          <!-- Depoimento 1 -->
+          <div class="bg-slate-950/80 border border-purple-900/40 rounded-2xl p-4 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3 border-b border-slate-800/80 pb-2">
+                <span class="text-xs font-bold text-purple-300">Salão de Beleza</span>
+                <span class="text-[10px] bg-emerald-950 text-emerald-400 px-2 py-0.5 rounded font-semibold border border-emerald-800/40">Agenda Cheia</span>
+              </div>
+              <div class="space-y-2 text-xs leading-relaxed">
+                <div class="bg-slate-900 p-2.5 rounded-lg border border-slate-800 text-slate-300">
+                  "Oi! Passando pra avisar que batemos o recorde de agendamentos da semana. O fluxo no WhatsApp não parou desde terça!"
+                </div>
+                <div class="bg-purple-950/60 p-2.5 rounded-lg border border-purple-800/40 text-purple-200 ml-3">
+                  "Excelente! O sistema de captação local ajustado fez total diferença na sua região."
+                </div>
+              </div>
+            </div>
+            <span class="text-[10px] text-slate-500 mt-3 block text-right font-medium">Cliente SDL48 • Verificado</span>
+          </div>
+
+          <!-- Depoimento 2 -->
+          <div class="bg-slate-950/80 border border-purple-900/40 rounded-2xl p-4 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3 border-b border-slate-800/80 pb-2">
+                <span class="text-xs font-bold text-purple-300">Diagnóstico e Resultados</span>
+                <span class="text-[10px] bg-purple-950 text-purple-300 px-2 py-0.5 rounded font-semibold border border-purple-800/40">Demanda Ativa</span>
+              </div>
+              <div class="space-y-2 text-xs leading-relaxed">
+                <div class="bg-slate-900 p-2.5 rounded-lg border border-slate-800 text-slate-300">
+                  "Depois que ajustamos os gargalos do diagnóstico, os clientes finalmente começaram a chegar sabendo o que queriam comprar."
+                </div>
+                <div class="bg-purple-950/60 p-2.5 rounded-lg border border-purple-800/40 text-purple-200 ml-3">
+                  "Esse é o objetivo: atração previsível sem depender apenas da sorte."
+                </div>
+              </div>
+            </div>
+            <span class="text-[10px] text-slate-500 mt-3 block text-right font-medium">Cliente SDL48 • Verificado</span>
+          </div>
+
+          <!-- Depoimento 3 -->
+          <div class="bg-slate-950/80 border border-purple-900/40 rounded-2xl p-4 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3 border-b border-slate-800/80 pb-2">
+                <span class="text-xs font-bold text-purple-300">Saída do Vermelho</span>
+                <span class="text-[10px] bg-emerald-950 text-emerald-400 px-2 py-0.5 rounded font-semibold border border-emerald-800/40">Recuperação</span>
+              </div>
+              <div class="space-y-2 text-xs leading-relaxed">
+                <div class="bg-slate-900 p-2.5 rounded-lg border border-slate-800 text-slate-300">
+                  "Eu já tinha tentado duas agências de tráfego que só gastaram meu dinheiro. Com o método de vocês conseguimos virar o caixa no primeiro mês."
+                </div>
+                <div class="bg-purple-950/60 p-2.5 rounded-lg border border-purple-800/40 text-purple-200 ml-3">
+                  "Parabéns pelo empenho na execução! A previsibilidade é resultado de método."
+                </div>
+              </div>
+            </div>
+            <span class="text-[10px] text-slate-500 mt-3 block text-right font-medium">Cliente SDL48 • Verificado</span>
+          </div>
+
+          <!-- Depoimento 4 -->
+          <div class="bg-slate-950/80 border border-purple-900/40 rounded-2xl p-4 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3 border-b border-slate-800/80 pb-2">
+                <span class="text-xs font-bold text-purple-300">Salão em Rua Sem Saída</span>
+                <span class="text-[10px] bg-blue-950 text-blue-400 px-2 py-0.5 rounded font-semibold border border-blue-800/40">Localização</span>
+              </div>
+              <div class="space-y-2 text-xs leading-relaxed">
+                <div class="bg-slate-900 p-2.5 rounded-lg border border-slate-800 text-slate-300">
+                  "Meu estabelecimento fica escondido numa rua sem saída. Achei que não daria certo, mas hoje o pessoal da cidade inteira vem até aqui."
+                </div>
+                <div class="bg-purple-950/60 p-2.5 rounded-lg border border-purple-800/40 text-purple-200 ml-3">
+                  "Localização física não segura um negócio que sabe se posicionar no digital!"
+                </div>
+              </div>
+            </div>
+            <span class="text-[10px] text-slate-500 mt-3 block text-right font-medium">Cliente SDL48 • Verificado</span>
+          </div>
+
+          <!-- Depoimento 5 -->
+          <div class="bg-slate-950/80 border border-purple-900/40 rounded-2xl p-4 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3 border-b border-slate-800/80 pb-2">
+                <span class="text-xs font-bold text-purple-300">Clínica de Atendimento</span>
+                <span class="text-[10px] bg-purple-950 text-purple-300 px-2 py-0.5 rounded font-semibold border border-purple-800/40">Serviço Especializado</span>
+              </div>
+              <div class="space-y-2 text-xs leading-relaxed">
+                <div class="bg-slate-900 p-2.5 rounded-lg border border-slate-800 text-slate-300">
+                  "Conseguimos preencher os horários ociosos da tarde na clínica. O retorno sobre a mentoria foi rápido demais!"
+                </div>
+                <div class="bg-purple-950/60 p-2.5 rounded-lg border border-purple-800/40 text-purple-200 ml-3">
+                  "Excelente resultado! Vamos continuar otimizando."
+                </div>
+              </div>
+            </div>
+            <span class="text-[10px] text-slate-500 mt-3 block text-right font-medium">Cliente SDL48 • Verificado</span>
+          </div>
+
+          <!-- Depoimento 6 -->
+          <div class="bg-slate-950/80 border border-purple-900/40 rounded-2xl p-4 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-3 border-b border-slate-800/80 pb-2">
+                <span class="text-xs font-bold text-purple-300">Diagnóstico em Casal</span>
+                <span class="text-[10px] bg-emerald-950 text-emerald-400 px-2 py-0.5 rounded font-semibold border border-emerald-800/40">Empresa Familiar</span>
+              </div>
+              <div class="space-y-2 text-xs leading-relaxed">
+                <div class="bg-slate-900 p-2.5 rounded-lg border border-slate-800 text-slate-300">
+                  "Eu e meu marido estávamos perdidos sobre qual passo dar. O diagnóstico nos deu o norte exato que precisávamos."
+                </div>
+                <div class="bg-purple-950/60 p-2.5 rounded-lg border border-purple-800/40 text-purple-200 ml-3">
+                  "Fico muito feliz em ajudar a estruturar a empresa de vocês!"
+                </div>
+              </div>
+            </div>
+            <span class="text-[10px] text-slate-500 mt-3 block text-right font-medium">Cliente SDL48 • Verificado</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Final Pitch Card -->
+      <div class="bg-gradient-to-b from-purple-950/60 to-slate-900 border border-purple-800/40 rounded-2xl p-6 sm:p-8 text-center shadow-2xl">
+        <h2 class="text-xl sm:text-3xl font-black text-white mb-3 leading-tight">
+          Ser o melhor da sua cidade não basta se o cliente não lembrar de você na hora que precisa do que você oferece.
+        </h2>
+        <p class="text-xs sm:text-sm text-slate-300 max-w-xl mx-auto mb-6 leading-relaxed">
+          Chega de adivinhar o que funciona. Entenda onde seu negócio está travado e crie uma demanda de pessoas interessadas.
+        </p>
+
+        <a href="https://api.whatsapp.com/send/?phone=5511960112597&amp;text=Ol%C3%A1%2C+acabei+de+assistir+ao+mini+treinamento+e+quero+o+acompanhamento+do+Charles.&amp;type=phone_number&amp;app_absent=0" target="_blank" rel="noopener noreferrer"
+           class="inline-flex items-center justify-center gap-2 px-6 py-3.5 gradient-bg-btn text-white font-bold text-base rounded-xl pulse-glow transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 shadow-md">
+          <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+          </svg>
+          CHAMAR NO WHATSAPP
+        </a>
+      </div>
+
+      <!-- Footer (oculto até 3:39, conforme PRD) -->
+      <footer class="text-center text-xs text-slate-500 border-t border-slate-900 pt-6">
+        <p>© Método SDL48 • Todos os direitos reservados.</p>
+      </footer>
+
+    </div>
+
+  </div>
+
+  <!-- YouTube IFrame API & Delay Logic (tempo de reprodução = 3:39) -->
+  <script>
+    // ============================================================
+    // REgra de negócio: o conteúdo abaixo do vídeo só é revelado
+    // após 3 minutos e 39 segundos (219s) de VÍDEO ASSISTIDO.
+    // Pausas, bobinas e navegação para trás não contam.
+    // ============================================================
+    const SECONDS_TO_WAIT = 219; // 3:39
+    const TICK_MS = 250;         // precisão do cronômetro
+
+    let player = null;
+    let tickerId = null;         // id do setInterval do cronômetro
+    let lastTickTime = null;     // timestamp do último tick
+    let watchedSeconds = 0;      // segundos acumulados assistindo
+    let revealed = false;
+
+    // Revela o bloco oculto uma única vez
+    function revealContent() {
+      if (revealed) return;
+      revealed = true;
+      stopTicker();
+      const content = document.getElementById('delayedContent');
+      if (content) {
+        content.classList.remove('delay-hidden');
+        content.classList.add('delay-show');
+      }
+    }
+
+    // Inicia / retoma a contagem do tempo assistido
+    function startTicker() {
+      if (tickerId !== null || revealed) return;
+      lastTickTime = Date.now();
+      tickerId = setInterval(function () {
+        const now = Date.now();
+        watchedSeconds += (now - lastTickTime) / 1000;
+        lastTickTime = now;
+        if (watchedSeconds >= SECONDS_TO_WAIT) {
+          revealContent();
+        }
+      }, TICK_MS);
+    }
+
+    // Pausa a contagem (pausa, buffer ou fim do vídeo)
+    function stopTicker() {
+      if (tickerId === null) return;
+      watchedSeconds += (Date.now() - lastTickTime) / 1000;
+      clearInterval(tickerId);
+      tickerId = null;
+      lastTickTime = null;
+    }
+
+    // Sincroniza o acumulado com o tempo real do player (corrige seeks)
+    function syncWithPlayerTime() {
+      if (!player || typeof player.getCurrentTime !== 'function') return;
+      try {
+        const current = player.getCurrentTime();
+        // Se o usuário avançou o vídeo (seek), o tempo assistido passa a ser
+        // o maior valor entre o acumulado e a posição atual do vídeo.
+        if (current > watchedSeconds) watchedSeconds = current;
+        if (watchedSeconds >= SECONDS_TO_WAIT) revealContent();
+      } catch (e) {}
+    }
+
+    // Carrega a API de IFrame do YouTube
+    function loadYouTubeAPI() {
+      if (window.YT && window.YT.Player) {
+        onYouTubeIframeAPIReady();
+        return;
+      }
+      const tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      const firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    }
+
+    function forceHDQuality(playerInstance) {
+      if (!playerInstance) return;
+      try {
+        if (typeof playerInstance.setPlaybackQuality === 'function') {
+          playerInstance.setPlaybackQuality('hd1080');
+        }
+      } catch (e) {}
+    }
+
+    function onYouTubeIframeAPIReady() {
+      try {
+        player = new YT.Player('vslVideo', {
+          events: {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange
+          }
+        });
+      } catch (err) {
+        console.warn('YouTube API indisponível:', err);
+      }
+    }
+
+    function onPlayerReady(event) {
+      forceHDQuality(event.target);
+      syncWithPlayerTime();
+    }
+
+    function onPlayerStateChange(event) {
+      if (event.data === YT.PlayerState.PLAYING) {
+        forceHDQuality(event.target);
+        startTicker();
+        syncWithPlayerTime();
+      } else if (
+        event.data === YT.PlayerState.PAUSED ||
+        event.data === YT.PlayerState.ENDED ||
+        event.data === YT.PlayerState.BUFFERING ||
+        event.data === YT.PlayerState.CUED
+      ) {
+        stopTicker();
+        syncWithPlayerTime();
+      }
+    }
+
+    // Inicialização
+    window.addEventListener('load', function () {
+      // Modo de teste/desenvolvimento: ?unlock=1 revela o conteúdo na hora
+      try {
+        if (new URLSearchParams(window.location.search).get('unlock') === '1') {
+          revealContent();
+          return;
+        }
+      } catch (e) {}
+
+      loadYouTubeAPI();
+
+      // Segurança: se a API do YouTube não carregar em 15s, avisa no console
+      setTimeout(function () {
+        if (!player) {
+          console.warn('API do YouTube não inicializou — o conteúdo bloqueado só será revelado quando o vídeo tocar por 3:39.');
+        }
+      }, 15000);
+    });
+  </script>
+
+</body>
+</html>
