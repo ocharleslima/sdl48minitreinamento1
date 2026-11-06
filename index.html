@@ -130,6 +130,62 @@
       50% { transform: scale(1.05); }
       100% { transform: scale(1); }
     }
+
+    /* ===== MENSAGEM DE PAUSA (toque na tela) ===== */
+    .pause-message {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 20;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+      background: rgba(3, 7, 18, 0.92);
+      backdrop-filter: blur(6px);
+      cursor: pointer;
+    }
+    .pause-message.visible {
+      display: flex;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    .pause-message-box {
+      max-width: 420px;
+      background: rgba(30, 41, 59, 0.9);
+      border: 1px solid rgba(168, 85, 247, 0.45);
+      border-radius: 16px;
+      padding: 22px 20px;
+      box-shadow: 0 0 40px rgba(147, 51, 234, 0.35);
+    }
+    .pause-message-icon {
+      width: 44px;
+      height: 44px;
+      margin: 0 auto 12px;
+      fill: #a855f7;
+    }
+    .pause-message-text {
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 1.35;
+      margin-bottom: 16px;
+    }
+    .pause-message-btn {
+      display: inline-block;
+      background: linear-gradient(135deg, #a855f7 0%, #3b82f6 100%);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 11px 22px;
+      border-radius: 10px;
+      border: 0;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen selection:bg-purple-500 selection:text-white">
@@ -173,6 +229,17 @@
             <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
           </svg>
           <span class="unmute-text">Clique aqui para ouvir</span>
+        </div>
+      </div>
+
+      <!-- MENSAGEM EXIBIDA AO TOCAR NA TELA (PAUSA) -->
+      <div class="pause-message" id="pauseMessage">
+        <div class="pause-message-box">
+          <svg class="pause-message-icon" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/>
+          </svg>
+          <p class="pause-message-text">Assista até o final antes desse vídeo sair do ar</p>
+          <button class="pause-message-btn" id="pauseMessageBtn" type="button">Continuar assistindo</button>
         </div>
       </div>
     </div>
@@ -443,7 +510,8 @@
 
     // 3. Ao clicar no overlay, desmuta o som, volta pro segundo zero e inicia com áudio
     const overlay = document.getElementById('playerOverlay');
-    overlay.addEventListener('click', () => {
+    overlay.addEventListener('click', (e) => {
+      e.stopPropagation(); // impede que o clique suba pro wrapper e pause o vídeo
       if (player) {
         player.unMute();
         player.seekTo(0);
@@ -460,6 +528,33 @@
       if (event.data === YT.PlayerState.PLAYING) {
         iniciarMonitoramentoTempo();
       }
+    }
+
+    // 4b. Pausa ao tocar na tela + mensagem "Assista até o final..."
+    const pauseMessage = document.getElementById('pauseMessage');
+    const pauseMessageBtn = document.getElementById('pauseMessageBtn');
+
+    if (pauseMessage) {
+      pauseMessage.addEventListener('click', function (e) {
+        e.stopPropagation(); // não deixa o clique passar pro wrapper
+        pauseMessage.classList.remove('visible');
+        if (player && typeof player.playVideo === 'function') {
+          player.playVideo();
+        }
+      });
+    }
+
+    const playerWrapper = document.getElementById('playerWrapper');
+    if (playerWrapper) {
+      playerWrapper.addEventListener('click', function (e) {
+        // Só pausa depois que o overlay inicial já sumiu (vídeo em reprodução com som)
+        if (!overlay || !overlay.classList.contains('playing')) return;
+        if (pauseMessage && pauseMessage.classList.contains('visible')) return;
+        if (player && typeof player.pauseVideo === 'function') {
+          player.pauseVideo();
+          pauseMessage.classList.add('visible');
+        }
+      });
     }
 
     // 5. Verifica a cada 1 segundo se o vídeo atingiu o tempo chave de 3:39 (219s)
