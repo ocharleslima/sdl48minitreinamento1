@@ -187,8 +187,10 @@
       cursor: pointer;
     }
 
-    /* Esconde o selo do Netlify */
-    iframe[src*="netlify"],
+    /* Esconde o selo do Netlify (sem afetar o iframe do YouTube) */
+    iframe#nl-badge-frame,
+    iframe[src*="/.netlify/"],
+    iframe[src*="netlify.com"],
     .netlify-badge,
     [data-netlify-badge],
     a[href*="netlify.com"] {
