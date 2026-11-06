@@ -41,6 +41,95 @@
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
+
+    /* ===== SDL48 PLAYER PRO (player mantido como está) ===== */
+    .sdl48-player-wrapper {
+      position: relative;
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 40px rgba(147, 51, 234, 0.15);
+      background: #000;
+      aspect-ratio: 16 / 9;
+      margin-bottom: 32px;
+      border: 1px solid rgba(168, 85, 247, 0.3);
+    }
+    .yt-iframe-container {
+      position: absolute;
+      top: -50px;
+      left: 0;
+      width: 100%;
+      height: calc(100% + 100px);
+      pointer-events: none;
+    }
+    .yt-iframe-container iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    /* OVERLAY DE ÁUDIO MUTADO (MARCA D'ÁGUA + BOTÃO OUVIR) */
+    .player-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+      background: rgba(0, 0, 0, 0.45);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: opacity 0.3s ease;
+      text-align: center;
+      padding: 16px;
+    }
+    .player-overlay.playing {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .audio-notice-tag {
+      background: rgba(229, 9, 20, 0.9);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 15px rgba(229, 9, 20, 0.5);
+      animation: pulseText 2s infinite;
+    }
+    .unmute-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(0, 0, 0, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 10px 18px;
+      border-radius: 50px;
+      backdrop-filter: blur(5px);
+    }
+    .unmute-icon {
+      width: 24px;
+      height: 24px;
+      fill: #e50914;
+    }
+    .unmute-text {
+      font-size: 14px;
+      font-weight: 700;
+      color: #ffffff;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    @keyframes pulseText {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
   </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen selection:bg-purple-500 selection:text-white">
@@ -70,17 +159,22 @@
       Descubra onde sua empresa está perdendo demanda e como criar um sistema previsível de atração na sua região. Assista à aula prática abaixo:
     </p>
 
-    <!-- Video Box Wrapper -->
-    <div class="relative w-full aspect-video bg-slate-900 rounded-2xl overflow-hidden border border-purple-500/30 shadow-2xl shadow-purple-950/50 mb-8">
-      <iframe
-        id="vslVideo"
-        class="w-full h-full"
-        src="https://www.youtube.com/embed/qTOP6mVfJ5o?enablejsapi=1&amp;autoplay=0&amp;rel=0&amp;controls=1&amp;modestbranding=1&amp;playsinline=1"
-        title="Aula Prática Sistema de Demanda Local"
-        frameborder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        allowfullscreen>
-      </iframe>
+    <!-- ===== SDL48 PLAYER PRO (VSL COM OVERLAY DE ÁUDIO) ===== -->
+    <div class="sdl48-player-wrapper" id="playerWrapper">
+      <div class="yt-iframe-container">
+        <div id="youtubePlayer"></div>
+      </div>
+
+      <!-- MARCA D'ÁGUA + AVISO DE SOM -->
+      <div class="player-overlay" id="playerOverlay">
+        <div class="audio-notice-tag">Seu vídeo já começou</div>
+        <div class="unmute-box">
+          <svg class="unmute-icon" viewBox="0 0 24 24">
+            <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
+          </svg>
+          <span class="unmute-text">Clique aqui para ouvir</span>
+        </div>
+      </div>
     </div>
 
     <!-- CONTEÚDO BLOQUEADO (revelado apenas após 3:39 de vídeo assistido) -->
@@ -298,7 +392,7 @@
         </a>
       </div>
 
-      <!-- Footer (oculto até 3:39, conforme PRD) -->
+      <!-- Footer (oculto até 3:39) -->
       <footer class="text-center text-xs text-slate-500 border-t border-slate-900 pt-6">
         <p>© Método SDL48 • Todos os direitos reservados.</p>
       </footer>
@@ -307,142 +401,100 @@
 
   </div>
 
-  <!-- YouTube IFrame API & Delay Logic (tempo de reprodução = 3:39) -->
+  <!-- API DO YOUTUBE + SCRIPT DO PLAYER E DELAY DE 3:39 -->
+  <script src="https://www.youtube.com/iframe_api"></script>
   <script>
-    // ============================================================
-    // REgra de negócio: o conteúdo abaixo do vídeo só é revelado
-    // após 3 minutos e 39 segundos (219s) de VÍDEO ASSISTIDO.
-    // Pausas, bobinas e navegação para trás não contam.
-    // ============================================================
-    const SECONDS_TO_WAIT = 219; // 3:39
-    const TICK_MS = 250;         // precisão do cronômetro
+    let player;
+    // ID real do vídeo: Mini Treinamento 01 - SDL48
+    const YOUTUBE_VIDEO_ID = 'qTOP6mVfJ5o';
+    const DELAY_SEGUNDOS = 219; // 3 minutos e 39 segundos de aula
+    let checkTimerInterval;
+    let liberado = false;
 
-    let player = null;
-    let tickerId = null;         // id do setInterval do cronômetro
-    let lastTickTime = null;     // timestamp do último tick
-    let watchedSeconds = 0;      // segundos acumulados assistindo
-    let revealed = false;
-
-    // Revela o bloco oculto uma única vez
-    function revealContent() {
-      if (revealed) return;
-      revealed = true;
-      stopTicker();
-      const content = document.getElementById('delayedContent');
-      if (content) {
-        content.classList.remove('delay-hidden');
-        content.classList.add('delay-show');
-      }
-    }
-
-    // Inicia / retoma a contagem do tempo assistido
-    function startTicker() {
-      if (tickerId !== null || revealed) return;
-      lastTickTime = Date.now();
-      tickerId = setInterval(function () {
-        const now = Date.now();
-        watchedSeconds += (now - lastTickTime) / 1000;
-        lastTickTime = now;
-        if (watchedSeconds >= SECONDS_TO_WAIT) {
-          revealContent();
-        }
-      }, TICK_MS);
-    }
-
-    // Pausa a contagem (pausa, buffer ou fim do vídeo)
-    function stopTicker() {
-      if (tickerId === null) return;
-      watchedSeconds += (Date.now() - lastTickTime) / 1000;
-      clearInterval(tickerId);
-      tickerId = null;
-      lastTickTime = null;
-    }
-
-    // Sincroniza o acumulado com o tempo real do player (corrige seeks)
-    function syncWithPlayerTime() {
-      if (!player || typeof player.getCurrentTime !== 'function') return;
-      try {
-        const current = player.getCurrentTime();
-        // Se o usuário avançou o vídeo (seek), o tempo assistido passa a ser
-        // o maior valor entre o acumulado e a posição atual do vídeo.
-        if (current > watchedSeconds) watchedSeconds = current;
-        if (watchedSeconds >= SECONDS_TO_WAIT) revealContent();
-      } catch (e) {}
-    }
-
-    // Carrega a API de IFrame do YouTube
-    function loadYouTubeAPI() {
-      if (window.YT && window.YT.Player) {
-        onYouTubeIframeAPIReady();
-        return;
-      }
-      const tag = document.createElement('script');
-      tag.src = 'https://www.youtube.com/iframe_api';
-      const firstScriptTag = document.getElementsByTagName('script')[0];
-      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-    }
-
-    function forceHDQuality(playerInstance) {
-      if (!playerInstance) return;
-      try {
-        if (typeof playerInstance.setPlaybackQuality === 'function') {
-          playerInstance.setPlaybackQuality('hd1080');
-        }
-      } catch (e) {}
-    }
-
+    // 1. Inicializa o player escondendo controles nativos e forçando o carregamento leve
     function onYouTubeIframeAPIReady() {
-      try {
-        player = new YT.Player('vslVideo', {
-          events: {
-            'onReady': onPlayerReady,
-            'onStateChange': onPlayerStateChange
-          }
-        });
-      } catch (err) {
-        console.warn('YouTube API indisponível:', err);
+      player = new YT.Player('youtubePlayer', {
+        videoId: YOUTUBE_VIDEO_ID,
+        playerVars: {
+          'autoplay': 1,
+          'mute': 1,
+          'controls': 0,
+          'rel': 0,
+          'showinfo': 0,
+          'modestbranding': 1,
+          'iv_load_policy': 3,
+          'disablekb': 1,
+          'playsinline': 1,
+          'vq': 'hd720'
+        },
+        events: {
+          'onReady': onPlayerReady,
+          'onStateChange': onPlayerStateChange
+        }
+      });
+    }
+
+    // 2. Tenta setar 720p HD assim que o player está pronto
+    function onPlayerReady(event) {
+      if (player.setPlaybackQuality) {
+        player.setPlaybackQuality('hd720');
       }
     }
 
-    function onPlayerReady(event) {
-      forceHDQuality(event.target);
-      syncWithPlayerTime();
-    }
+    // 3. Ao clicar no overlay, desmuta o som, volta pro segundo zero e inicia com áudio
+    const overlay = document.getElementById('playerOverlay');
+    overlay.addEventListener('click', () => {
+      if (player) {
+        player.unMute();
+        player.seekTo(0);
+        if (player.setPlaybackQuality) {
+          player.setPlaybackQuality('hd720');
+        }
+        player.playVideo();
+        overlay.classList.add('playing');
+      }
+    });
 
+    // 4. Monitora quando o vídeo começa a rodar pra disparar a contagem do delay
     function onPlayerStateChange(event) {
       if (event.data === YT.PlayerState.PLAYING) {
-        forceHDQuality(event.target);
-        startTicker();
-        syncWithPlayerTime();
-      } else if (
-        event.data === YT.PlayerState.PAUSED ||
-        event.data === YT.PlayerState.ENDED ||
-        event.data === YT.PlayerState.BUFFERING ||
-        event.data === YT.PlayerState.CUED
-      ) {
-        stopTicker();
-        syncWithPlayerTime();
+        iniciarMonitoramentoTempo();
       }
     }
 
-    // Inicialização
+    // 5. Verifica a cada 1 segundo se o vídeo atingiu o tempo chave de 3:39 (219s)
+    function iniciarMonitoramentoTempo() {
+      if (checkTimerInterval) return;
+
+      checkTimerInterval = setInterval(() => {
+        if (player && player.getCurrentTime) {
+          const tempoAtual = player.getCurrentTime();
+          if (tempoAtual >= DELAY_SEGUNDOS) {
+            liberarConteudo();
+          }
+        }
+      }, 1000);
+    }
+
+    // 6. Revela a CTA do WhatsApp, a Identificação, os Depoimentos e o rodapé
+    function liberarConteudo() {
+      if (liberado) return;
+      const conteudo = document.getElementById('delayedContent');
+      if (conteudo) {
+        liberado = true;
+        conteudo.classList.remove('delay-hidden');
+        conteudo.classList.add('delay-show');
+        if (checkTimerInterval) clearInterval(checkTimerInterval);
+      }
+    }
+
+    // --- Modo de teste: ?unlock=1 revela o conteúdo na hora (não afeta o público) ---
     window.addEventListener('load', function () {
-      // Modo de teste/desenvolvimento: ?unlock=1 revela o conteúdo na hora
       try {
         if (new URLSearchParams(window.location.search).get('unlock') === '1') {
-          revealContent();
-          return;
+          liberarConteudo();
         }
       } catch (e) {}
-
-      loadYouTubeAPI();
-
-      // Segurança: se a API do YouTube não carregar em 15s, avisa no console
-      setTimeout(function () {
-        if (!player) {
-          console.warn('API do YouTube não inicializou — o conteúdo bloqueado só será revelado quando o vídeo tocar por 3:39.');
-        }
-      }, 15000);
     });
   </script>
 

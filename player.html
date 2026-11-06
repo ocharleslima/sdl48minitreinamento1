@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SDL48 Player Pro - Mini Treinamento</title>
+  <style>
+    /* RESET & ESTILOS BASE */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background-color: #0d0d0d;
+      color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.5;
+      padding: 16px;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* HEADLINE DO TOPO */
+    .headline-container {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .headline-tag {
+      color: #e50914;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+    .headline-main {
+      font-size: 20px;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.3;
+      margin-bottom: 10px;
+    }
+    .headline-sub {
+      font-size: 14px;
+      color: #a0a0a0;
+    }
+
+    /* SDL48 PLAYER PRO (VÍDEO CUSTOMIZADO) */
+    .sdl48-player-wrapper {
+      position: relative;
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+      background: #000;
+      aspect-ratio: 16 / 9;
+      margin-bottom: 24px;
+    }
+    .yt-iframe-container {
+      position: absolute;
+      top: -50px;
+      left: 0;
+      width: 100%;
+      height: calc(100% + 100px);
+      pointer-events: none;
+    }
+    .yt-iframe-container iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    /* OVERLAY DE ÁUDIO MUTADO (MARCA D'ÁGUA + BOTÃO OUVIR) */
+    .player-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+      background: rgba(0, 0, 0, 0.45);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: opacity 0.3s ease;
+      text-align: center;
+      padding: 16px;
+    }
+    .player-overlay.playing {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .audio-notice-tag {
+      background: rgba(229, 9, 20, 0.9);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 15px rgba(229, 9, 20, 0.5);
+      animation: pulseText 2s infinite;
+    }
+
+    .unmute-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(0, 0, 0, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 10px 18px;
+      border-radius: 50px;
+      backdrop-filter: blur(5px);
+    }
+
+    .unmute-icon {
+      width: 24px;
+      height: 24px;
+      fill: #e50914;
+    }
+
+    .unmute-text {
+      font-size: 14px;
+      font-weight: 700;
+      color: #ffffff;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    @keyframes pulseText {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    /* ÁREA OCULTA (DISPARADA EM 3:39) */
+    .delayed-content {
+      display: none;
+      animation: fadeIn 0.8s ease forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* BOTÃO CTA WHATSAPP */
+    .cta-btn {
+      display: block;
+      width: 100%;
+      background: #25d366;
+      color: #fff;
+      text-align: center;
+      padding: 18px 24px;
+      font-size: 18px;
+      font-weight: 800;
+      text-decoration: none;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+      margin-bottom: 32px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .cta-btn:active {
+      transform: scale(0.98);
+    }
+
+    /* MOTOR DA DEMANDA SDL48 */
+    .motor-section {
+      background: #141414;
+      border: 1px solid #262626;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 32px;
+    }
+    .section-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    .protocol-grid {
+      display: grid;
+      gap: 12px;
+    }
+    .protocol-card {
+      background: #1f1f1f;
+      padding: 12px 16px;
+      border-radius: 8px;
+      border-left: 4px solid #e50914;
+    }
+    .protocol-num {
+      font-size: 11px;
+      font-weight: 700;
+      color: #e50914;
+      text-transform: uppercase;
+    }
+    .protocol-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    /* DEPOIMENTOS EM PRINT */
+    .depoimentos-section {
+      margin-bottom: 32px;
+    }
+    .depoimentos-grid {
+      display: grid;
+      gap: 16px;
+    }
+    .depoimento-img {
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid #262626;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- 1. HEADLINE -->
+    <div class="headline-container">
+      <div class="headline-tag">Treinamento Prático SDL48</div>
+      <h1 class="headline-main">Pare de depender da sorte para colocar clientes no seu negócio</h1>
+      <p class="headline-sub">Assista à aula prática de 4 minutos e descubra como criar demanda previsível na sua região.</p>
+    </div>
+
+    <!-- 2. VSL / SDL48 PLAYER PRO COM OVERLAY DE ÁUDIO -->
+    <div class="sdl48-player-wrapper" id="playerWrapper">
+      <div class="yt-iframe-container">
+        <div id="youtubePlayer"></div>
+      </div>
+
+      <!-- MARCA D'ÁGUA + AVISO DE SOM -->
+      <div class="player-overlay" id="playerOverlay">
+        <div class="audio-notice-tag">Seu vídeo já começou</div>
+        <div class="unmute-box">
+          <svg class="unmute-icon" viewBox="0 0 24 24">
+            <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
+          </svg>
+          <span class="unmute-text">Clique aqui para ouvir</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. CONTEÚDO COM DELAY DE 3:39 (INICIALMENTE OCULTO) -->
+    <div class="delayed-content" id="delayedContent">
+
+      <a href="https://wa.me/5511960112597?text=Ol%C3%A1%2C+acabei+de+assistir+ao+mini+treinamento+e+quero+o+acompanhamento+do+Charles." class="cta-btn" target="_blank">
+        Chamar no WhatsApp
+      </a>
+
+      <!-- MOTOR DA DEMANDA SDL48 -->
+      <div class="motor-section">
+        <h2 class="section-title">O Motor da Demanda SDL48</h2>
+        <div class="protocol-grid">
+          <div class="protocol-card">
+            <div class="protocol-num">Protocolo 0</div>
+            <div class="protocol-name">Diagnosticar — Descobrir o gargalo real antes de investir</div>
+          </div>
+          <div class="protocol-card">
+            <div class="protocol-num">Protocolo 1</div>
+            <div class="protocol-name">Preparar — Organizar o perfil para converter atenção em conversas</div>
+          </div>
+          <div class="protocol-card">
+            <div class="protocol-num">Protocolo 2</div>
+            <div class="protocol-name">Publicar — Testar mensagens com intenção sem gastar com anúncios</div>
+          </div>
+          <div class="protocol-card">
+            <div class="protocol-num">Protocolo 3</div>
+            <div class="protocol-name">Validar — Reconhecer os sinais de interesse real do público</div>
+          </div>
+          <div class="protocol-card">
+            <div class="protocol-num">Protocolo 4</div>
+            <div class="protocol-name">Potencializar — Investir com critério naquilo que funcionou</div>
+          </div>
+          <div class="protocol-card">
+            <div class="protocol-num">Protocolo 5</div>
+            <div class="protocol-name">Repetir — Transformar os aprendizados num sistema previsível</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DEPOIMENTOS EM PRINT -->
+      <div class="depoimentos-section">
+        <h2 class="section-title">Resultados Reais de Alunos</h2>
+        <div class="depoimentos-grid">
+          <img src="depoimento1.png" alt="Depoimento 1" class="depoimento-img">
+          <img src="depoimento2.png" alt="Depoimento 2" class="depoimento-img">
+          <img src="depoimento3.png" alt="Depoimento 3" class="depoimento-img">
+          <img src="depoimento4.png" alt="Depoimento 4" class="depoimento-img">
+          <img src="depoimento5.png" alt="Depoimento 5" class="depoimento-img">
+          <img src="depoimento6.png" alt="Depoimento 6" class="depoimento-img">
+        </div>
+      </div>
+
+      <a href="https://wa.me/5511960112597?text=Ol%C3%A1%2C+acabei+de+assistir+ao+mini+treinamento+e+quero+o+acompanhamento+do+Charles." class="cta-btn" target="_blank">
+        Chamar no WhatsApp
+      </a>
+
+    </div>
+
+  </div>
+
+  <!-- API DO YOUTUBE + SCRIPT DO PLAYER E DELAY -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script>
+    let player;
+    // ID real do vídeo: Mini Treinamento 01 - SDL48
+    const YOUTUBE_VIDEO_ID = 'qTOP6mVfJ5o';
+    const DELAY_SEGUNDOS = 219; // 3 minutos e 39 segundos de aula
+    let checkTimerInterval;
+
+    // 1. Inicializa o player escondendo controles nativos e forçando o carregamento leve
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('youtubePlayer', {
+        videoId: YOUTUBE_VIDEO_ID,
+        playerVars: {
+          'autoplay': 1,
+          'mute': 1,
+          'controls': 0,
+          'rel': 0,
+          'showinfo': 0,
+          'modestbranding': 1,
+          'iv_load_policy': 3,
+          'disablekb': 1,
+          'playsinline': 1,
+          'vq': 'hd720'
+        },
+        events: {
+          'onReady': onPlayerReady,
+          'onStateChange': onPlayerStateChange
+        }
+      });
+    }
+
+    // 2. Tenta setar 720p HD assim que o player está pronto
+    function onPlayerReady(event) {
+      if (player.setPlaybackQuality) {
+        player.setPlaybackQuality('hd720');
+      }
+    }
+
+    // 3. Ao clicar no overlay, desmuta o som, volta pro segundo zero e inicia com áudio
+    const overlay = document.getElementById('playerOverlay');
+    overlay.addEventListener('click', () => {
+      if (player) {
+        player.unMute();
+        player.seekTo(0);
+        if (player.setPlaybackQuality) {
+          player.setPlaybackQuality('hd720');
+        }
+        player.playVideo();
+        overlay.classList.add('playing');
+      }
+    });
+
+    // 4. Monitora quando o vídeo começa a rodar pra disparar a contagem do delay
+    function onPlayerStateChange(event) {
+      if (event.data === YT.PlayerState.PLAYING) {
+        iniciarMonitoramentoTempo();
+      }
+    }
+
+    // 5. Verifica a cada 1 segundo se o vídeo atingiu o tempo chave de 3:39 (219s)
+    function iniciarMonitoramentoTempo() {
+      if (checkTimerInterval) return;
+
+      checkTimerInterval = setInterval(() => {
+        if (player && player.getCurrentTime) {
+          const tempoAtual = player.getCurrentTime();
+          if (tempoAtual >= DELAY_SEGUNDOS) {
+            liberarConteudo();
+            clearInterval(checkTimerInterval);
+          }
+        }
+      }, 1000);
+    }
+
+    // 6. Revela a CTA do WhatsApp, o Motor da Demanda e os Prints de Depoimentos
+    function liberarConteudo() {
+      const conteudo = document.getElementById('delayedContent');
+      if (conteudo) {
+        conteudo.style.display = 'block';
+      }
+    }
+
+    // --- Modo de teste: ?unlock=1 revela o conteúdo na hora (não afeta o público) ---
+    window.addEventListener('load', function () {
+      try {
+        if (new URLSearchParams(window.location.search).get('unlock') === '1') {
+          liberarConteudo();
+          if (checkTimerInterval) clearInterval(checkTimerInterval);
+        }
+      } catch (e) {}
+    });
+  </script>
+
+</body>
+</html>
